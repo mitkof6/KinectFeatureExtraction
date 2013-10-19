@@ -5,5 +5,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Openni2"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Nite2.10"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jogl"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCV-2.4.4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jama"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaGeom"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

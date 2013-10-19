@@ -6,7 +6,10 @@ import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import main.Constant;
+
 import org.openni.VideoFrameRef;
+import org.openni.VideoMode;
 import org.openni.VideoStream;
 import org.openni.VideoStream.NewFrameListener;
 
@@ -25,14 +28,15 @@ public class RGBStream extends Component implements NewFrameListener{
     
 	public RGBStream(VideoStream videoStream){
 		this.videoStream = videoStream;
-		/*
+		
 		this.videoStream.setVideoMode(new VideoMode(
 						Constant.COLOR_WIDTH, 
 						Constant.COLOR_HEIGHT,
 						Constant.COLOR_FPS,
 						Constant.COLOR_PIXEL_FORMAT));
-						*/
+						
 		this.videoStream.addNewFrameListener(this);
+		//this.videoStream.setMirroringEnabled(true);
 		
 	}
 	

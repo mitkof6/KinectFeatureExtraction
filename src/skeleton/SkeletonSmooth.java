@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import main.Constant;
-import math.Point3D;
+import math.geom3d.Point3D;
 
 import com.primesense.nite.JointType;
 import com.primesense.nite.SkeletonJoint;
@@ -44,9 +44,9 @@ public class SkeletonSmooth {
 			float x = 0,  y = 0, z = 0;
 			int count = 0;
 			for(Point3D p : memory.get(type)){
-				x += p.x;
-				y += p.y;
-				z += p.z;
+				x += p.getX();
+				y += p.getY();
+				z += p.getZ();
 				count++;
 			}
 			return new Joint(x/count, y/count, z/count);

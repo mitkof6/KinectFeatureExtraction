@@ -1,38 +1,49 @@
 package kinect;
 
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Vector;
 
+
+import main.Constant;
+import math.geom3d.Point3D;
+
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.openni.CoordinateConverter;
 import org.openni.VideoFrameRef;
+import org.openni.VideoMode;
 import org.openni.VideoStream;
 import org.openni.VideoStream.NewFrameListener;
 
-public class DepthStream extends Component implements NewFrameListener{
+public class DepthStream implements NewFrameListener{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private float histogram[];
+	private VideoStream videoStream;
+	private VideoFrameRef lastFrame;
+	public MatViewer viwer;
+	Mat depthSrc, depthDist;
+	public Vector<Point3D> pointCloud = new Vector<>();
 	
-	float histogram[];
-    int[] imagePixels;
-    VideoStream videoStream;
-    VideoFrameRef lastFrame;
-    BufferedImage bufferedImage;
+    boolean first = false;
     
     public DepthStream(VideoStream videoStream){
+    	
 		this.videoStream = videoStream;
-		/*
+		
 		this.videoStream.setVideoMode(new VideoMode(
-						Constant.COLOR_WIDTH, 
-						Constant.COLOR_HEIGHT,
-						Constant.COLOR_FPS,
-						Constant.COLOR_PIXEL_FORMAT));
-						*/
+						Constant.DEPTH_WIDTH, 
+						Constant.DEPTH_HEIGHT,
+						Constant.DEPTH_FPS,
+						Constant.DEPTH_PIXEL_FORMAT));
+			
 		this.videoStream.addNewFrameListener(this);
+		//this.videoStream.setMirroringEnabled(true);
+		
+		depthSrc = new Mat(Constant.DEPTH_HEIGHT, Constant.DEPTH_WIDTH, CvType.CV_16UC1);
+		depthDist = new Mat(Constant.DEPTH_HEIGHT, Constant.DEPTH_WIDTH, CvType.CV_8UC1);
+		viwer = new MatViewer();
 		
 	}
 	
@@ -52,48 +63,35 @@ public class DepthStream extends Component implements NewFrameListener{
 	public void onFrameReady(VideoStream arg0) {	
 		lastFrame = videoStream.readFrame();
         ByteBuffer frameData = lastFrame.getData().order(ByteOrder.LITTLE_ENDIAN);
-        //CoordinateConverter.convertDepthToWorld(videoStream, 0, 0, 0);
-        // make sure we have enough room
-        if (imagePixels == null || imagePixels.length < lastFrame.getWidth() * lastFrame.getHeight()) {
-            imagePixels = new int[lastFrame.getWidth() * lastFrame.getHeight()];
-        }
+        
 		calcHist(frameData);
         frameData.rewind();
-        int pos = 0;
-
+       
+        int width = 0,height = 0;
         while(frameData.remaining() > 0) {
             int depth = (int)frameData.getShort() & 0xFFFF;
-            
+            //System.out.println(depth);
             short pixel = (short)histogram[depth];
-            imagePixels[pos] = 0xFF000000 | (pixel << 16) | (pixel << 8);
-            pos++;
+            
+            depthSrc.put(height, width, pixel);
+            if(first){
+            		org.openni.Point3D<Float> point = CoordinateConverter.convertDepthToWorld(videoStream, width, height, pixel);
+                    pointCloud.add(new Point3D(point.getX(), point.getY(), point.getZ()));
+            }
+            
+            width++;
+            if(width == Constant.DEPTH_WIDTH){
+            	width = 0;
+            	height++;
+            }
         }
         
-        repaint();
-		
+        first = false;
+        Core.normalize(depthSrc, depthDist, 0, 255, Core.NORM_MINMAX, CvType.CV_8UC1);
+        //Imgproc.blur(depthSrc, depthDist, new Size(9, 9));
+        //Imgproc.Laplacian(depthDist, depthDist, -1);
+        viwer.update(depthDist, ".png");
 	}
-	
-	@Override
-    public synchronized void paint(Graphics g) {
-        if (lastFrame == null) {
-            return;
-        }
-        
-        int width = lastFrame.getWidth();
-        int height = lastFrame.getHeight();
-
-        // make sure we have enough room
-        if (bufferedImage == null || bufferedImage.getWidth() != width || 
-        				bufferedImage.getHeight() != height) {
-            bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        }
-        
-        bufferedImage.setRGB(0, 0, width, height, imagePixels, 0, width);
-
-        int framePosX = (getWidth() - width) / 2;
-        int framePosY = (getHeight() - height) / 2;
-        g.drawImage(bufferedImage, framePosX, framePosY, null);
-    }
 	
 	private void calcHist(ByteBuffer depthBuffer) {
         // make sure we have enough room
@@ -124,5 +122,6 @@ public class DepthStream extends Component implements NewFrameListener{
             }
         }
     }
+	
 
 }

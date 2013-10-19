@@ -31,7 +31,7 @@ public class MainWindow extends JFrame{
 			horizontBox.add(Main.kinect.rgbStream);
 		}
 		if(Main.kinect.depthStream!=null){
-			horizontBox.add(Main.kinect.depthStream);
+			horizontBox.add(Main.kinect.depthStream.viwer);
 		}
 		this.add(horizontBox, BorderLayout.CENTER);
 		

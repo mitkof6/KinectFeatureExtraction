@@ -1,6 +1,9 @@
 package main;
 
-import gui.Animator;
+import opengl.Animator;
+
+import org.opencv.core.Core;
+
 import gui.MainWindow;
 import kinect.Kinect;
 
@@ -31,6 +34,7 @@ public class Main {
         try {
             System.load(Constant.OPENNI2_DLL);
             System.load(Constant.NITE2_DLL);
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         }
         catch (Exception e){
             e.printStackTrace();

@@ -1,8 +1,12 @@
 package skeleton;
 
+
+
+import math.geom3d.Point3D;
+
 import com.primesense.nite.SkeletonJoint;
 
-import math.Point3D;
+
 
 
 public class Joint {

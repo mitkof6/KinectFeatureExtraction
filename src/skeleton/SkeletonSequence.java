@@ -42,15 +42,15 @@ public class SkeletonSequence {
 						drawn.get(type[1])==null) continue;
 			gl.glBegin(GL2.GL_LINE_LOOP);
 			
-			gl.glVertex3f(
-							drawn.get(type[0]).position.x/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[0]).position.y/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[0]).position.z/Constant.JOINT_POSITION_SCALING);
+			gl.glVertex3d(
+							drawn.get(type[0]).position.getX()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[0]).position.getY()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[0]).position.getZ()/Constant.JOINT_POSITION_SCALING);
 			
-			gl.glVertex3f(
-							drawn.get(type[1]).position.x/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[1]).position.y/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[1]).position.z/Constant.JOINT_POSITION_SCALING);
+			gl.glVertex3d(
+							drawn.get(type[1]).position.getX()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[1]).position.getY()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[1]).position.getZ()/Constant.JOINT_POSITION_SCALING);
 			gl.glEnd();	
 		}
 		
