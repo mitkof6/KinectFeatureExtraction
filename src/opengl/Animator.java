@@ -82,7 +82,7 @@ public class Animator extends Frame implements GLEventListener {
 						new Vector3D(Constant.CAMERA_UP_X, Constant.CAMERA_UP_Y, Constant.CAMERA_UP_Z));
 		
 		//floor
-		floor = new Floor(Constant.GRID_SIZE, Constant.GRID_WIDTH);
+		floor = new Floor(Constant.GRID_SIZE, Constant.GRID_LINE_WIDTH);
 		
 		//axis
 		axis = new Axis(Constant.AXIS_LENGTH, Constant.AXIS_WIDTH);
@@ -131,6 +131,13 @@ public class Animator extends Frame implements GLEventListener {
 		// Change back to model view matrix.
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
+		
+		//light
+		//float[] diffuse = {0.5f, 0.5f, 0.5f};
+		//gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, diffuse, 0);
+		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, Constant.LIGHT_POSITION, 0);
+		gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
 	}
 
 	@Override
