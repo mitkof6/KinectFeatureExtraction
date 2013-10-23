@@ -4,8 +4,6 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-
-
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLCapabilities;
@@ -18,7 +16,6 @@ import main.Constant;
 import main.Main;
 import math.geom3d.Point3D;
 import math.geom3d.Vector3D;
-
 
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -47,8 +44,6 @@ public class Animator extends Frame implements GLEventListener {
 	private Floor floor;
 	
 	private Axis axis;
-
-
 
 	/**
 	 * Constructor
@@ -145,24 +140,6 @@ public class Animator extends Frame implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		render(drawable);
-		
-	}
-
-	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-					int height) {
-		final GL2 gl = drawable.getGL().getGL2();
-		gl.glViewport(0, 0, width, height);
-	}
-
-	/**
-	 * Render method
-	 *
-	 * @param drawable the drawable object
-	 */
-	private void render(GLAutoDrawable drawable) {
-
 		gl = drawable.getGL().getGL2();
 
 		// clear screen.
@@ -188,16 +165,23 @@ public class Animator extends Frame implements GLEventListener {
 	
 		gl.glFlush();
 	}
+
+	@Override
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
+					int height) {
+		final GL2 gl = drawable.getGL().getGL2();
+		gl.glViewport(0, 0, width, height);
+	}
 	
 	private void drawPointCloud(GL2 gl){
 		gl.glPushMatrix();
 		//gl.glPointSize(2f);
-		gl.glColor3f(1f, 1f, 0);
+		float[] wellow = {1f, 1f, 0};
 		for(int i = 0;i<Main.kinect.depthStream.pointCloud.size();i++){
 			Point3D p = Main.kinect.depthStream.pointCloud.get(i);
 			gl.glBegin(GL2.GL_POINTS);
-			//System.out.println(p.toString());
-			gl.glVertex3d(p.getX(), p.getY(), p.getZ());
+			gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, wellow, 0);
+			gl.glVertex3d(p.getX()/Constant.JOINT_POSITION_SCALING, p.getY()/Constant.JOINT_POSITION_SCALING, p.getZ()/Constant.JOINT_POSITION_SCALING);
 			gl.glEnd();
 		}
 		
@@ -205,6 +189,3 @@ public class Animator extends Frame implements GLEventListener {
 	}
 	
 }
-
-
-

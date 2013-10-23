@@ -9,6 +9,7 @@ import javax.media.opengl.glu.GLU;
 
 import main.Constant;
 import math.geom3d.Vector3D;
+import math.geom3d.transform.AffineTransform3D;
 
 public class Camera implements KeyListener, MouseMotionListener{
 	
@@ -36,6 +37,7 @@ public class Camera implements KeyListener, MouseMotionListener{
 		
 		Vector3D direction = view.minus(position);
 		direction = direction.normalize();
+		
 		position = position.plus(direction.times(speed));
 	}
 	
@@ -50,13 +52,7 @@ public class Camera implements KeyListener, MouseMotionListener{
 	}
 	
 	private void rotateX(double speed){
-
-		Vector3D direction = view.minus(position);
-		
-		view = new Vector3D(
-						position.getX(),
-						Math.cos(speed)*direction.getY()-Math.sin(speed)*direction.getZ(),
-						Math.sin(speed)*direction.getY()+Math.cos(speed)*direction.getZ());
+		view = view.transform(AffineTransform3D.createRotationOx(speed));
 	}
 	
 	private void strafe(double speed){
@@ -103,7 +99,7 @@ public class Camera implements KeyListener, MouseMotionListener{
 		lastY = event.getY();
 
 		if(Math.abs(diffX)<Math.abs(diffY)){
-			rotateX(-diffY*Constant.CAMERA_ROTATE_SPEED);
+			rotateX(diffY*Constant.CAMERA_ROTATE_SPEED);
 		}else{
 			rotateY(-diffX*Constant.CAMERA_ROTATE_SPEED);
 		}

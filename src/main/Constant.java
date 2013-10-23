@@ -86,9 +86,9 @@ public class Constant {
 	
 	public static boolean SKELETON_VISIBILITY = false;
 	
-	public static double CAMERA_POS_X = 10;
+	public static double CAMERA_POS_X = 0;
 	public static double CAMERA_POS_Y = 0;
-	public static double CAMERA_POS_Z = +30;
+	public static double CAMERA_POS_Z = -20;
 	
 	public static double CAMERA_VIEW_X = 0;
 	public static double CAMERA_VIEW_Y = 0;
@@ -98,10 +98,10 @@ public class Constant {
 	public static double CAMERA_UP_Y = 1;
 	public static double CAMERA_UP_Z = 0;
 	
-	public static int CAMERA_MOVE_SPEED = 5;
-	public static double CAMERA_ROTATE_SPEED = 0.03;
+	public static int CAMERA_MOVE_SPEED = 10;
+	public static double CAMERA_ROTATE_SPEED = 0.06;
 	
-	public static float[] LIGHT_POSITION = {1000f, 100f, 10f};
+	public static float[] LIGHT_POSITION = {100f, 200f, 10f};
 	
 						
 	

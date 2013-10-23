@@ -8,9 +8,12 @@ import java.util.Vector;
 import main.Constant;
 import math.geom3d.Point3D;
 
+import opencv.MatViewer;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 import org.openni.CoordinateConverter;
 import org.openni.VideoFrameRef;
 import org.openni.VideoMode;
@@ -39,7 +42,6 @@ public class DepthStream implements NewFrameListener{
 						Constant.DEPTH_PIXEL_FORMAT));
 			
 		this.videoStream.addNewFrameListener(this);
-		//this.videoStream.setMirroringEnabled(true);
 		
 		depthSrc = new Mat(Constant.DEPTH_HEIGHT, Constant.DEPTH_WIDTH, CvType.CV_16UC1);
 		depthDist = new Mat(Constant.DEPTH_HEIGHT, Constant.DEPTH_WIDTH, CvType.CV_8UC1);
@@ -69,13 +71,14 @@ public class DepthStream implements NewFrameListener{
        
         int width = 0,height = 0;
         while(frameData.remaining() > 0) {
-            int depth = (int)frameData.getShort() & 0xFFFF;
-            //System.out.println(depth);
+            int depth = (int)frameData.getShort();
+            
             short pixel = (short)histogram[depth];
             
             depthSrc.put(height, width, pixel);
-            if(first){
-            		org.openni.Point3D<Float> point = CoordinateConverter.convertDepthToWorld(videoStream, width, height, pixel);
+            
+            if(first){//depth map
+            		org.openni.Point3D<Float> point = CoordinateConverter.convertDepthToWorld(videoStream, width, height, depth);
                     pointCloud.add(new Point3D(point.getX(), point.getY(), point.getZ()));
             }
             
@@ -90,6 +93,7 @@ public class DepthStream implements NewFrameListener{
         Core.normalize(depthSrc, depthDist, 0, 255, Core.NORM_MINMAX, CvType.CV_8UC1);
         //Imgproc.blur(depthSrc, depthDist, new Size(9, 9));
         //Imgproc.Laplacian(depthDist, depthDist, -1);
+        Imgproc.Canny(depthDist, depthDist, 400, 500);
         viwer.update(depthDist, ".png");
 	}
 	

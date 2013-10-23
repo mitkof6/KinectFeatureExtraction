@@ -1,4 +1,4 @@
-package kinect;
+package opencv;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
