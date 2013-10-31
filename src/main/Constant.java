@@ -4,17 +4,24 @@ import org.openni.PixelFormat;
 
 import com.primesense.nite.JointType;
 
-
+/**
+ * Contains constants
+ * 
+ * @author Jim Staneb
+ *
+ */
 public class Constant {
 
 	public static final String OPENNI2_DLL = "C:\\Program Files\\OpenNI2\\Tools\\OpenNI2.dll";
 	public static final String NITE2_DLL = "C:\\Program Files\\PrimeSense\\NiTE2\\Redist\\NiTE2.dll";
 	
+	public static boolean START_COLOR = false;
 	public static int COLOR_WIDTH = 640; 
 	public static int COLOR_HEIGHT = 480;
 	public static int COLOR_FPS = 30;
 	public static int COLOR_PIXEL_FORMAT = PixelFormat.RGB888.toNative(); 
 	
+	public static boolean START_DEPTH = true;
 	public static int DEPTH_WIDTH = 640;
 	public static int DEPTH_HEIGHT = 480;
 	public static int DEPTH_FPS = 30;
@@ -23,13 +30,14 @@ public class Constant {
 	public static int MAIN_WINDOW_WIDTH = 2*640;
 	public static int MAIN_WINDOW_HEIGHT = 480;
 	
+	public static boolean START_ANIMATOR = true;
 	public static int ANIMATOR_FPS =30;
 	public static int ANIMATOR_WIDTH = 640;
 	public static int ANIMATOR_HEIGHT = 480;
 	
-	public static float FLOOR_CONFIDENCE = .8f;
+	public static boolean START_USER = true;
 	
-	public static int JOINT_SMOOTH_MEMORY = 10;
+	public static float FLOOR_CONFIDENCE = .8f;
 	public static float JOINT_CONFIDENCE = .6f;
 	
 	public static final JointType[][] JOINT_PAIRS = {
@@ -87,22 +95,19 @@ public class Constant {
 	public static boolean SKELETON_VISIBILITY = false;
 	
 	public static double CAMERA_POS_X = 0;
-	public static double CAMERA_POS_Y = 0;
-	public static double CAMERA_POS_Z = -20;
+	public static double CAMERA_POS_Y = 2;
+	public static double CAMERA_POS_Z = +2;
 	
 	public static double CAMERA_VIEW_X = 0;
-	public static double CAMERA_VIEW_Y = 0;
-	public static double CAMERA_VIEW_Z = 0;
+	public static double CAMERA_VIEW_Y = 2;
+	public static double CAMERA_VIEW_Z = 10;
 	
 	public static double CAMERA_UP_X = 0;
 	public static double CAMERA_UP_Y = 1;
 	public static double CAMERA_UP_Z = 0;
 	
 	public static int CAMERA_MOVE_SPEED = 10;
-	public static double CAMERA_ROTATE_SPEED = 0.06;
+	public static double CAMERA_ROTATE_SPEED = 0.03;
 	
 	public static float[] LIGHT_POSITION = {100f, 200f, 10f};
-	
-						
-	
 }

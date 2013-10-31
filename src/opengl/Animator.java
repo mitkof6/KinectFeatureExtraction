@@ -14,14 +14,12 @@ import javax.media.opengl.glu.GLU;
 
 import main.Constant;
 import main.Main;
-import math.geom3d.Point3D;
 import math.geom3d.Vector3D;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
 /**
- * The class for viewing the animation and interaction between
- * bone system and skin
+ * OpenGL model viewer
  *
  * @author Jim Stanev
  */
@@ -88,7 +86,7 @@ public class Animator extends Frame implements GLEventListener {
 		canvas.addMouseMotionListener(camera);
 		canvas.addKeyListener(camera);
 		canvas.setFocusable(true);
-
+		
 		//frame
 		this.add(canvas);
 
@@ -159,10 +157,9 @@ public class Animator extends Frame implements GLEventListener {
 		//draw skeleton
 		if(Constant.SKELETON_VISIBILITY){
 			Main.kinect.userStream.sequence.draw(gl);
+			Main.kinect.depthStream.sequence.draw(gl);
 		}
 		
-		drawPointCloud(gl);
-	
 		gl.glFlush();
 	}
 
@@ -171,21 +168,6 @@ public class Animator extends Frame implements GLEventListener {
 					int height) {
 		final GL2 gl = drawable.getGL().getGL2();
 		gl.glViewport(0, 0, width, height);
-	}
-	
-	private void drawPointCloud(GL2 gl){
-		gl.glPushMatrix();
-		//gl.glPointSize(2f);
-		float[] wellow = {1f, 1f, 0};
-		for(int i = 0;i<Main.kinect.depthStream.pointCloud.size();i++){
-			Point3D p = Main.kinect.depthStream.pointCloud.get(i);
-			gl.glBegin(GL2.GL_POINTS);
-			gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, wellow, 0);
-			gl.glVertex3d(p.getX()/Constant.JOINT_POSITION_SCALING, p.getY()/Constant.JOINT_POSITION_SCALING, p.getZ()/Constant.JOINT_POSITION_SCALING);
-			gl.glEnd();
-		}
-		
-		gl.glPopMatrix();
 	}
 	
 }

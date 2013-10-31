@@ -10,14 +10,18 @@ import com.primesense.nite.JointType;
 import com.primesense.nite.Skeleton;
 import com.primesense.nite.SkeletonJoint;
 
+/**
+ * Sequence of skeletons
+ *  
+ * @author Jim Staneb
+ *
+ */
 public class SkeletonSequence {
 	
 	private Vector<Pose> sequence;
-	private SkeletonSmooth smooth;
 	
 	public SkeletonSequence() {
 		sequence = new Vector<>();
-		smooth = new SkeletonSmooth();
 
 	}
 	
@@ -25,11 +29,16 @@ public class SkeletonSequence {
 		Pose newPose = new Pose();
 		
 		for(SkeletonJoint joint: skeleton.getJoints()){
-			newPose.add(joint.getJointType(), smooth(joint));
+			newPose.add(joint.getJointType(), joint);
 		}
 		sequence.add(newPose);
 	}
 	
+	/**
+	 * OpenGL draw function for the last pose
+	 * 
+	 * @param gl
+	 */
 	public void draw(GL2 gl){
 		if(sequence.isEmpty()) return;
 		Pose drawn = sequence.lastElement();
@@ -42,23 +51,19 @@ public class SkeletonSequence {
 						drawn.get(type[1])==null) continue;
 			gl.glBegin(GL2.GL_LINE_LOOP);
 			
-			gl.glVertex3d(
-							drawn.get(type[0]).position.getX()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[0]).position.getY()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[0]).position.getZ()/Constant.JOINT_POSITION_SCALING);
+				gl.glVertex3d(
+							drawn.get(type[0]).getPosition().getX()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[0]).getPosition().getY()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[0]).getPosition().getZ()/Constant.JOINT_POSITION_SCALING);
 			
-			gl.glVertex3d(
-							drawn.get(type[1]).position.getX()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[1]).position.getY()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[1]).position.getZ()/Constant.JOINT_POSITION_SCALING);
+				gl.glVertex3d(
+							drawn.get(type[1]).getPosition().getX()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[1]).getPosition().getY()/Constant.JOINT_POSITION_SCALING,
+							drawn.get(type[1]).getPosition().getZ()/Constant.JOINT_POSITION_SCALING);
 			gl.glEnd();	
 		}
 		
 		gl.glPopMatrix();
 	}
 	
-	private Joint smooth(SkeletonJoint joint){
-		smooth.updateMemory(joint);
-		return smooth.getPosition(joint.getJointType());
-	}
 }

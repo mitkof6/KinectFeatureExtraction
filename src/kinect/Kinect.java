@@ -13,11 +13,26 @@ import org.openni.VideoStream;
 import com.primesense.nite.NiTE;
 import com.primesense.nite.UserTracker;
 
+/**
+ * Initializes kinect device and opens streams
+ * 
+ * @author Jim Stanev
+ *
+ */
 public class Kinect {
 
 	private Device device;
+	/**
+	 * RGB stream
+	 */
 	public RGBStream rgbStream;
+	/**
+	 * Depth stream
+	 */
 	public DepthStream depthStream;
+	/**
+	 * User stream
+	 */
 	public UserStream userStream;
 	
 	public Kinect(){
@@ -34,16 +49,25 @@ public class Kinect {
         device = Device.open(devicesInfo.get(0).getUri());
 	}
 	
+	/**
+	 * Starts rgb stream
+	 */
 	public void openRGB(){
 		rgbStream = new RGBStream(VideoStream.create(device, SensorType.COLOR));
-		rgbStream.start();
+		rgbStream.setStart();
 	}
 	
+	/**
+	 * Starts depth stream
+	 */
 	public void openDepth(){
 		depthStream = new DepthStream(VideoStream.create(device, SensorType.DEPTH));
-		depthStream.start();
+		depthStream.setStart();
 	}
 	
+	/**
+	 * Starts user skeleton/pointCloud tracker
+	 */
 	public void openUserTracker(){
 		userStream = new UserStream(UserTracker.create());
 	}

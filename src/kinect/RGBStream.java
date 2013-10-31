@@ -13,6 +13,12 @@ import org.openni.VideoMode;
 import org.openni.VideoStream;
 import org.openni.VideoStream.NewFrameListener;
 
+/**
+ * Handles rgb data from kinect
+ * 
+ * @author Jim Stanev
+ *
+ */
 public class RGBStream extends Component implements NewFrameListener{
 
 	
@@ -21,10 +27,12 @@ public class RGBStream extends Component implements NewFrameListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	int[] imagePixels;
-    VideoStream videoStream;
-    VideoFrameRef lastFrame;
-    BufferedImage bufferedImage;
+	private int[] imagePixels;
+	private VideoStream videoStream;
+	private VideoFrameRef lastFrame;
+	private BufferedImage bufferedImage;
+	
+	private boolean start = false;
     
 	public RGBStream(VideoStream videoStream){
 		this.videoStream = videoStream;
@@ -36,19 +44,18 @@ public class RGBStream extends Component implements NewFrameListener{
 						Constant.COLOR_PIXEL_FORMAT));
 						
 		this.videoStream.addNewFrameListener(this);
-		//this.videoStream.setMirroringEnabled(true);
-		
 	}
 	
-	public void start(){
-		if(videoStream!=null){
+	/**
+     * Starts and stops streaming
+     */
+	public void setStart(){
+		if(!start){
 			this.videoStream.start();
-		}
-	}
-	
-	public void stop(){
-		if(videoStream!=null){
+			start = true;
+		}else{
 			this.videoStream.stop();
+			start = false;
 		}
 	}
 	
@@ -68,6 +75,7 @@ public class RGBStream extends Component implements NewFrameListener{
             int red = (int)frameData.get() & 0xFF;
             int green = (int)frameData.get() & 0xFF;
             int blue = (int)frameData.get() & 0xFF;
+
             imagePixels[pos] = 0xFF000000 | (red << 16) | (green << 8) | blue;
             pos++;
         }
@@ -96,5 +104,4 @@ public class RGBStream extends Component implements NewFrameListener{
         int framePosY = (getHeight() - height) / 2;
         g.drawImage(bufferedImage, framePosX, framePosY, null);
     }
-
 }

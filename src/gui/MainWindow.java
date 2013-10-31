@@ -12,6 +12,12 @@ import javax.swing.JToolBar;
 import main.Constant;
 import main.Main;
 
+/**
+ * Main Window
+ * 
+ * @author Jim Staneb
+ *
+ */
 public class MainWindow extends JFrame{
 
 	/**
@@ -23,15 +29,13 @@ public class MainWindow extends JFrame{
 		super("Viewer");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
-		
-		
-		
+
 		Box horizontBox = Box.createHorizontalBox();
 		if(Main.kinect.rgbStream!=null){
 			horizontBox.add(Main.kinect.rgbStream);
 		}
 		if(Main.kinect.depthStream!=null){
-			horizontBox.add(Main.kinect.depthStream.viwer);
+			horizontBox.add(Main.kinect.depthStream.viwer);			
 		}
 		this.add(horizontBox, BorderLayout.CENTER);
 		
@@ -41,11 +45,22 @@ public class MainWindow extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Main.kinect.rgbStream.stop();
+				if(Main.kinect.rgbStream!=null) Main.kinect.rgbStream.setStart();
 				
 			}
 		});
 		toolBar.add(rgbButton);
+		
+		JButton depthButton = new JButton("Depth");
+		depthButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(Main.kinect.depthStream!=null) Main.kinect.depthStream.setStart();
+				
+			}
+		});
+		toolBar.add(depthButton);
 		this.add(toolBar, BorderLayout.NORTH);
 		
 		this.setSize(Constant.MAIN_WINDOW_WIDTH, Constant.MAIN_WINDOW_HEIGHT);

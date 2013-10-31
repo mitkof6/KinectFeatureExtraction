@@ -4,6 +4,12 @@ import javax.media.opengl.GL2;
 
 import main.Constant;
 
+/**
+ * Floor
+ * 
+ * @author Jim Stanev
+ *
+ */
 public class Floor {
 	
 	private int gridSize;
@@ -39,14 +45,14 @@ public class Floor {
                 flag = !flag;
                 gl.glBegin(GL2.GL_QUADS);
 
-                gl.glNormal3fv(normal, 0);
-                gl.glVertex3d(i, -Constant.FLOOR_Y, j);
-                gl.glNormal3fv(normal, 0);
-                gl.glVertex3d(i, -Constant.FLOOR_Y, j - 1);
-                gl.glNormal3fv(normal, 0);
-                gl.glVertex3d(i - 1,-Constant.FLOOR_Y, j - 1);
-                gl.glNormal3fv(normal, 0);
-                gl.glVertex3d(i - 1, -Constant.FLOOR_Y, j);
+                	gl.glNormal3fv(normal, 0);
+                	gl.glVertex3d(i, -Constant.FLOOR_Y, j);
+                	gl.glNormal3fv(normal, 0);
+                	gl.glVertex3d(i, -Constant.FLOOR_Y, j - 1);
+                	gl.glNormal3fv(normal, 0);
+                	gl.glVertex3d(i - 1,-Constant.FLOOR_Y, j - 1);
+                	gl.glNormal3fv(normal, 0);
+                	gl.glVertex3d(i - 1, -Constant.FLOOR_Y, j);
                 gl.glEnd();
             }
         }

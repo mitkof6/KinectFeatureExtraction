@@ -11,6 +11,12 @@ import main.Constant;
 import math.geom3d.Vector3D;
 import math.geom3d.transform.AffineTransform3D;
 
+/**
+ * Camera
+ * 
+ * @author Jim Stanev
+ *
+ */
 public class Camera implements KeyListener, MouseMotionListener{
 	
 	private Vector3D position;
@@ -18,7 +24,6 @@ public class Camera implements KeyListener, MouseMotionListener{
 	private Vector3D up;
 	
 	private int lastX = 0, lastY = 0;
-	
 	
 	public Camera(Vector3D position, Vector3D view, Vector3D up){
 		this.position = position;
@@ -78,8 +83,7 @@ public class Camera implements KeyListener, MouseMotionListener{
 			//move(-Constant.CAMERA_MOVE_SPEED);
 		}else if(event.getKeyCode()==KeyEvent.VK_D){//right
 			strafe(Constant.CAMERA_MOVE_SPEED);
-			//move(Constant.CAMERA_MOVE_SPEED);
-			
+			//move(Constant.CAMERA_MOVE_SPEED);	
 		}
 	}
 

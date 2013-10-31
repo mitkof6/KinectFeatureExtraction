@@ -12,22 +12,35 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.highgui.Highgui;
 
-
+/**
+ * OpenCV mat viewer
+ * 
+ * @author Jim Stanev
+ *
+ */
 public class MatViewer extends JPanel{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	private BufferedImage img;
 	
 	public MatViewer(){
 		
 	}
 	
+	/**
+	 * Updates image
+	 * 
+	 * @param mat source image
+	 * @param format ".png"
+	 */
 	public void update(Mat mat, String format){
 		MatOfByte matOfByte = new MatOfByte();
 	    Highgui.imencode(format, mat, matOfByte); 
+	    
 	    byte[] byteArray = matOfByte.toArray();
 
 	    try {
@@ -41,7 +54,7 @@ public class MatViewer extends JPanel{
 	    repaint();
 	}
    
-	 
+	@Override
     public void paint(Graphics g) {
         g.drawImage(img, 0, 0, null);
     }
