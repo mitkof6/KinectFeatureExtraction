@@ -5,15 +5,16 @@ import java.nio.ByteOrder;
 
 import main.Constant;
 import main.Main;
-import math.geom3d.Point3D;
 import opencv.MatViewer;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.openni.CoordinateConverter;
 import org.openni.VideoFrameRef;
 import org.openni.VideoMode;
 import org.openni.VideoStream;
 import org.openni.VideoStream.NewFrameListener;
+import org.openni.Point3D;
 
 import skeleton.PointCloud;
 import skeleton.PointCloudSequence;
@@ -21,7 +22,7 @@ import skeleton.PointCloudSequence;
 /**
  * Handles depth data from kinect
  * 
- * @author Jim Staneb
+ * @author Jim Stanev
  *
  */
 public class DepthStream implements NewFrameListener{
@@ -37,6 +38,8 @@ public class DepthStream implements NewFrameListener{
 	 * Point cloud sequence registered
 	 */
 	public PointCloudSequence sequence;
+	
+	private int startSampling;
 	
     private boolean start = false;
     
@@ -57,7 +60,7 @@ public class DepthStream implements NewFrameListener{
 		
 		sequence = new PointCloudSequence();
 		
-		
+		startSampling = Constant.DEPTH_FPS/Constant.SAMPLES_PER_FRAME;
 	}
 	
     /**
@@ -75,8 +78,11 @@ public class DepthStream implements NewFrameListener{
 
 	@Override
 	public void onFrameReady(VideoStream arg0) {
-		PointCloud pointCloud = new PointCloud();
+		startSampling--;//reset sampling
+		
 		lastFrame = videoStream.readFrame();
+		
+		PointCloud pointCloud = new PointCloud(lastFrame.getTimestamp());
 		
         ByteBuffer frameData = lastFrame.getData().order(ByteOrder.LITTLE_ENDIAN);
         
@@ -88,9 +94,15 @@ public class DepthStream implements NewFrameListener{
             
             depthMat.put(height, width, depth);
             
-            if(Main.kinect.userStream!=null&&Main.kinect.userStream.userPixel[height][width]!=0){
-            	pointCloud.add(getWorldCordinate(width, height, depth));
-            }//TODO
+            //add point to point cloud
+            if(Main.kinect.userStream!=null&&
+            		startSampling==0&&
+            		Main.kinect.userStream.userPixel[height][width]!=0){
+
+            	pointCloud.add(CoordinateConverter.convertDepthToWorld(videoStream, width, height, depth));
+            	//pointCloud.add(getWorldCordinate(width, height, depth));
+            	
+            }//TODO Chose method
 
             width++;
             if(width == Constant.DEPTH_WIDTH){
@@ -99,7 +111,17 @@ public class DepthStream implements NewFrameListener{
             }
         }
         
-        sequence.add(pointCloud);
+        //add point cloud to point cloud sequence
+        if(pointCloud.getPointCloud().size()!=0){
+        	 sequence.add(pointCloud); 
+        	 //System.out.println(pointCloud.getPointCloud().size());
+        }
+        
+        //reset sampling
+        if(startSampling==0){
+        	startSampling = Constant.DEPTH_FPS/Constant.SAMPLES_PER_FRAME;
+        }
+
         viwer.update(depthMat, ".png");
 	}
 	
@@ -111,7 +133,8 @@ public class DepthStream implements NewFrameListener{
 	 * @param depth depth value mm
 	 * @return
 	 */
-	private Point3D getWorldCordinate(int imageX, int imageY, int depth){
+	@SuppressWarnings("unused")
+	private Point3D<Float> getWorldCordinate(int imageX, int imageY, int depth){
 		float x, y;
 		/*
 		x = depth/Constant.DEPTH_WIDTH-.5f;
@@ -119,10 +142,10 @@ public class DepthStream implements NewFrameListener{
 		
 		return new Point3D(x*depth*Math.tan(hFOV/2)*2, y*depth*Math.tan(vFOV/2)*2, depth);
 		*/
-		x = (float) ((imageX-320)*depth/5.9425464969100040e+02+10);
-		y = (float) ((imageY-240)*depth/5.9248479436384002e+02);
+		x = (float) ((imageX-320)*depth/5.94e+02+35);
+		y = (float) ((imageY-240)*depth/5.92e+02);
 		//System.out.println(x+" "+y+" "+depth);
-		return new Point3D(x, -y, depth);
+		return new Point3D<Float>(x, -y, (float)depth);
 	}
 	
 

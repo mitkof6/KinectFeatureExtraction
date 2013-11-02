@@ -26,8 +26,7 @@ public class Main {
 	public static void main(String[] args) {
 		//kinect
 		kinect = new Kinect();
-		
-		if(Constant.START_COLOR) kinect.openRGB();
+		//if(Constant.START_COLOR) kinect.openRGB();
 		if(Constant.START_DEPTH) kinect.openDepth();
 		if(Constant.START_USER) kinect.openUserTracker();
 		

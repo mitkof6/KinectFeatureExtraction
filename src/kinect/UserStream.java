@@ -23,6 +23,7 @@ public class UserStream implements  NewFrameListener{
 	private UserTracker tracker;
     private UserTrackerFrameRef lastFrame;
     
+    private int startSampling;
     private boolean detectFlor = false;
     
     /**
@@ -31,7 +32,7 @@ public class UserStream implements  NewFrameListener{
     public SkeletonSequence sequence;
 
     /**
-     * Segmatation for user pixels only
+     * Segmentation for user pixels only
      */
     public int[][] userPixel;
     
@@ -47,6 +48,8 @@ public class UserStream implements  NewFrameListener{
 				userPixel[i][j] = 0;
 			}
 		}
+		
+		startSampling = Constant.DEPTH_FPS/Constant.SAMPLES_PER_FRAME;
 	}
 
 	@Override
@@ -54,7 +57,8 @@ public class UserStream implements  NewFrameListener{
 		lastFrame = tracker.readFrame();
 		
 		if(!detectFlor&&lastFrame.getFloorConfidence()>Constant.FLOOR_CONFIDENCE){
-			Constant.FLOOR_Y = -lastFrame.getPlane().getPoint().getY().intValue()/Constant.JOINT_POSITION_SCALING;
+			Constant.FLOOR_Y = 
+				-lastFrame.getPlane().getPoint().getY().intValue()/Constant.JOINT_POSITION_SCALING;
 			detectFlor = !detectFlor;
 		}
 		
@@ -74,8 +78,12 @@ public class UserStream implements  NewFrameListener{
         	}
         	if(user.isVisible()){
         		Constant.SKELETON_VISIBILITY = true;
-        		if (user.getSkeleton().getState() == SkeletonState.TRACKED) {
-            		sequence.add(user.getSkeleton());
+        		if (user.getSkeleton().getState() == SkeletonState.TRACKED) {//if tracked
+        			startSampling--;
+        			if(startSampling==0){
+        				sequence.add(user.getSkeleton(), lastFrame.getTimestamp());
+        				startSampling = Constant.DEPTH_FPS/Constant.SAMPLES_PER_FRAME;
+        			}
             		getUserMap(user.getId());
             	}
         	}
@@ -100,6 +108,9 @@ public class UserStream implements  NewFrameListener{
 			short depth = frameData.getShort();
 			
 			userPixel[height][width] = depth;
+			
+			filter(height, width);
+			
 			//System.out.println(depth);
 			width++;
             if(width == Constant.DEPTH_WIDTH){
@@ -109,6 +120,17 @@ public class UserStream implements  NewFrameListener{
             	if(height==Constant.DEPTH_HEIGHT) break;
             	
             }
+		}
+	}
+	
+	private void filter(int height, int width){
+		if(height-Constant.POINT_CLOUD_SAMPLING>0&&
+				width-Constant.POINT_CLOUD_SAMPLING>0){
+			for(int i = Constant.POINT_CLOUD_SAMPLING;i>0;i--){
+				if(userPixel[height-i][width]!=0||userPixel[height][width-i]!=0){
+					userPixel[height][width] = 0;
+				}
+			}
 		}
 	}
 }

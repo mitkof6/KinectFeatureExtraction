@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -15,7 +17,7 @@ import main.Main;
 /**
  * Main Window
  * 
- * @author Jim Staneb
+ * @author Jim Stanev
  *
  */
 public class MainWindow extends JFrame{
@@ -30,6 +32,7 @@ public class MainWindow extends JFrame{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 
+		//rgb-depth
 		Box horizontBox = Box.createHorizontalBox();
 		if(Main.kinect.rgbStream!=null){
 			horizontBox.add(Main.kinect.rgbStream);
@@ -37,8 +40,9 @@ public class MainWindow extends JFrame{
 		if(Main.kinect.depthStream!=null){
 			horizontBox.add(Main.kinect.depthStream.viwer);			
 		}
-		this.add(horizontBox, BorderLayout.CENTER);
+        this.add(horizontBox, BorderLayout.CENTER);
 		
+        //buttons
 		JToolBar toolBar = new JToolBar();
 		JButton rgbButton = new JButton("RGB");
 		rgbButton.addActionListener(new ActionListener() {
@@ -61,6 +65,50 @@ public class MainWindow extends JFrame{
 			}
 		});
 		toolBar.add(depthButton);
+		
+		JButton saveSkeleton = new JButton("Save Skel");
+		saveSkeleton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(Main.kinect.userStream!=null) {
+					try {
+						Main.kinect.userStream.sequence.export(Constant.SKELETON_FILE_NAME);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		});
+		toolBar.add(saveSkeleton);
+		
+		JButton saveMesh = new JButton("Save PCS");
+		saveMesh.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(Main.kinect.depthStream!=null) {
+					try {
+						Main.kinect.depthStream.sequence.export(Constant.POINT_CLOUD_FILE_NAME);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		});
+		toolBar.add(saveMesh);
 		this.add(toolBar, BorderLayout.NORTH);
 		
 		this.setSize(Constant.MAIN_WINDOW_WIDTH, Constant.MAIN_WINDOW_HEIGHT);

@@ -1,11 +1,17 @@
 package skeleton;
 
+import java.awt.Font;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.Vector;
 
 import javax.media.opengl.GL2;
 
 import main.Constant;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.primesense.nite.JointType;
 import com.primesense.nite.Skeleton;
 import com.primesense.nite.SkeletonJoint;
@@ -13,7 +19,7 @@ import com.primesense.nite.SkeletonJoint;
 /**
  * Sequence of skeletons
  *  
- * @author Jim Staneb
+ * @author Jim Stanev
  *
  */
 public class SkeletonSequence {
@@ -25,8 +31,8 @@ public class SkeletonSequence {
 
 	}
 	
-	public void add(Skeleton skeleton){
-		Pose newPose = new Pose();
+	public void add(Skeleton skeleton, long timeStamp){
+		Pose newPose = new Pose(timeStamp);
 		
 		for(SkeletonJoint joint: skeleton.getJoints()){
 			newPose.add(joint.getJointType(), joint);
@@ -44,6 +50,14 @@ public class SkeletonSequence {
 		Pose drawn = sequence.lastElement();
 
 		gl.glPushMatrix();
+		
+		TextRenderer renderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 12));
+		renderer.beginRendering(Constant.ANIMATOR_WIDTH, Constant.ANIMATOR_HEIGHT);
+	    // optionally set the color
+	    renderer.setColor(1.0f, 0f, 0f, 0.8f);
+	    renderer.draw(String.format("SKEL: %d", sequence.lastElement().getTimeStamp()), 10, Constant.ANIMATOR_HEIGHT-30) ;
+	    // ... more draw commands, color changes, etc.
+	    renderer.endRendering();
 		
 		gl.glColor3f(1f, 0f, 0f);
 		for(JointType[] type : Constant.JOINT_PAIRS){
@@ -64,6 +78,34 @@ public class SkeletonSequence {
 		}
 		
 		gl.glPopMatrix();
+	}
+	
+	public void export(String file) throws FileNotFoundException, UnsupportedEncodingException{
+		PrintWriter writer = new PrintWriter(file, "UTF-8");
+		DecimalFormat df = new DecimalFormat("#.#");
+		for(JointType type : Constant.JOINT_TYPES){
+			writer.println("j "+type.toString());
+		}
+		for(int i = 0;i<sequence.size();i++){
+			Pose pose = sequence.get(i);
+			writer.println("t "+pose.getTimeStamp());
+			for(JointType type : Constant.JOINT_TYPES){
+				SkeletonJoint joint = pose.get(type);
+				writer.println(
+						type.toString()+" "+
+						df.format(joint.getPosition().getX())+" "+
+						df.format(joint.getPosition().getY())+" "+
+						df.format(joint.getPosition().getY())+" "+
+						df.format(joint.getPositionConfidence())+" "+
+						df.format(joint.getOrientation().getX())+" "+
+						df.format(joint.getOrientation().getY())+" "+
+						df.format(joint.getOrientation().getY())+" "+
+						df.format(joint.getOrientation().getW())+" "+
+						df.format(joint.getOrientationConfidence()));
+			}
+		}
+		
+		writer.close();
 	}
 	
 }

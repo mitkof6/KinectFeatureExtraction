@@ -14,9 +14,11 @@ import com.primesense.nite.SkeletonJoint;
 public class Pose {
 
 	private HashMap<JointType, SkeletonJoint> joints;
+	private long timeStamp;
 	
-	public Pose(){
+	public Pose(long timeStamp){
 		joints = new HashMap<JointType, SkeletonJoint>();
+		this.timeStamp = timeStamp;
 	}
 	
 	public void add(JointType type, SkeletonJoint joint){
@@ -25,5 +27,9 @@ public class Pose {
 	
 	public SkeletonJoint get(JointType type){
 		return joints.get(type);
+	}
+	
+	public long getTimeStamp(){
+		return timeStamp;
 	}
 }
