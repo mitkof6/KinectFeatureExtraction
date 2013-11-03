@@ -99,10 +99,10 @@ public class DepthStream implements NewFrameListener{
             		startSampling==0&&
             		Main.kinect.userStream.userPixel[height][width]!=0){
 
-            	pointCloud.add(CoordinateConverter.convertDepthToWorld(videoStream, width, height, depth));
+            	pointCloud.add(CoordinateConverter.convertDepthToWorld(
+            			videoStream, width, height, depth));
             	//pointCloud.add(getWorldCordinate(width, height, depth));
-            	
-            }//TODO Chose method
+            }
 
             width++;
             if(width == Constant.DEPTH_WIDTH){
@@ -136,13 +136,8 @@ public class DepthStream implements NewFrameListener{
 	@SuppressWarnings("unused")
 	private Point3D<Float> getWorldCordinate(int imageX, int imageY, int depth){
 		float x, y;
-		/*
-		x = depth/Constant.DEPTH_WIDTH-.5f;
-		y = depth/Constant.DEPTH_HEIGHT+.5f;
-		
-		return new Point3D(x*depth*Math.tan(hFOV/2)*2, y*depth*Math.tan(vFOV/2)*2, depth);
-		*/
-		x = (float) ((imageX-320)*depth/5.94e+02+35);
+	
+		x = (float) ((imageX-320)*depth/5.94e+02+35);//TODO Calibration
 		y = (float) ((imageY-240)*depth/5.92e+02);
 		//System.out.println(x+" "+y+" "+depth);
 		return new Point3D<Float>(x, -y, (float)depth);

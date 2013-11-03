@@ -49,8 +49,9 @@ public class Animator extends Frame implements GLEventListener {
 	public Animator(){
 
 		super("Animator");
-		//this.setBounds(200, 20, Constant.WINDOW_WIDTH, Constant.WINDOW_HEIGHT);
-		this.setSize(Constant.ANIMATOR_WIDTH, Constant.ANIMATOR_HEIGHT);
+		this.setBounds(0, 280, Constant.ANIMATOR_WIDTH, Constant.ANIMATOR_HEIGHT);
+		//this.setSize(Constant.ANIMATOR_WIDTH, Constant.ANIMATOR_HEIGHT);
+		
 		//dispose
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -70,9 +71,9 @@ public class Animator extends Frame implements GLEventListener {
 		
 		//camera
 		camera = new Camera(
-						new Vector3D(Constant.CAMERA_POS_X, Constant.CAMERA_POS_Y, Constant.CAMERA_POS_Z),
-						new Vector3D(Constant.CAMERA_VIEW_X, Constant.CAMERA_VIEW_Y, Constant.CAMERA_VIEW_Z),
-						new Vector3D(Constant.CAMERA_UP_X, Constant.CAMERA_UP_Y, Constant.CAMERA_UP_Z));
+			new Vector3D(Constant.CAMERA_POS_X, Constant.CAMERA_POS_Y, Constant.CAMERA_POS_Z),
+			new Vector3D(Constant.CAMERA_VIEW_X, Constant.CAMERA_VIEW_Y, Constant.CAMERA_VIEW_Z),
+			new Vector3D(Constant.CAMERA_UP_X, Constant.CAMERA_UP_Y, Constant.CAMERA_UP_Z));
 		
 		//floor
 		floor = new Floor(Constant.GRID_SIZE, Constant.GRID_LINE_WIDTH);
@@ -113,15 +114,15 @@ public class Animator extends Frame implements GLEventListener {
 		//nice perspective.
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
 		
-		//set prespective
+		//set perspectiv
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		// Perspective.
+		//perspective.
 		float widthHeightRatio = (float) getWidth() / (float) getHeight();
-		glu.gluPerspective(45, widthHeightRatio, 1, 1000);
+		glu.gluPerspective(Constant.KINECT_HFOV, widthHeightRatio, 1, 100);
 
-		// Change back to model view matrix.
+		//change back to model view matrix.
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		
@@ -156,16 +157,15 @@ public class Animator extends Frame implements GLEventListener {
 				
 		//draw skeleton
 		if(Constant.SKELETON_VISIBILITY){
-			Main.kinect.userStream.sequence.draw(gl);
-			Main.kinect.depthStream.sequence.draw(gl);
+			if(Main.kinect.userStream!=null) Main.kinect.userStream.sequence.draw(gl);
+			if(Main.kinect.depthStream!=null) Main.kinect.depthStream.sequence.draw(gl);
 		}
 		
 		gl.glFlush();
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-					int height) {
+	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
 		final GL2 gl = drawable.getGL().getGL2();
 		gl.glViewport(0, 0, width, height);
 	}

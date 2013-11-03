@@ -51,12 +51,12 @@ public class SkeletonSequence {
 
 		gl.glPushMatrix();
 		
+		//text
 		TextRenderer renderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 12));
 		renderer.beginRendering(Constant.ANIMATOR_WIDTH, Constant.ANIMATOR_HEIGHT);
-	    // optionally set the color
 	    renderer.setColor(1.0f, 0f, 0f, 0.8f);
-	    renderer.draw(String.format("SKEL: %d", sequence.lastElement().getTimeStamp()), 10, Constant.ANIMATOR_HEIGHT-30) ;
-	    // ... more draw commands, color changes, etc.
+	    renderer.draw(String.format("SKEL: %d", sequence.lastElement().getTimeStamp()),
+	    		10, Constant.ANIMATOR_HEIGHT-30) ;
 	    renderer.endRendering();
 		
 		gl.glColor3f(1f, 0f, 0f);
@@ -66,14 +66,14 @@ public class SkeletonSequence {
 			gl.glBegin(GL2.GL_LINE_LOOP);
 			
 				gl.glVertex3d(
-							drawn.get(type[0]).getPosition().getX()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[0]).getPosition().getY()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[0]).getPosition().getZ()/Constant.JOINT_POSITION_SCALING);
+					drawn.get(type[0]).getPosition().getX()/Constant.POSITION_SCALING,
+					drawn.get(type[0]).getPosition().getY()/Constant.POSITION_SCALING,
+					drawn.get(type[0]).getPosition().getZ()/Constant.POSITION_SCALING);
 			
 				gl.glVertex3d(
-							drawn.get(type[1]).getPosition().getX()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[1]).getPosition().getY()/Constant.JOINT_POSITION_SCALING,
-							drawn.get(type[1]).getPosition().getZ()/Constant.JOINT_POSITION_SCALING);
+					drawn.get(type[1]).getPosition().getX()/Constant.POSITION_SCALING,
+					drawn.get(type[1]).getPosition().getY()/Constant.POSITION_SCALING,
+					drawn.get(type[1]).getPosition().getZ()/Constant.POSITION_SCALING);
 			gl.glEnd();	
 		}
 		
@@ -83,9 +83,15 @@ public class SkeletonSequence {
 	public void export(String file) throws FileNotFoundException, UnsupportedEncodingException{
 		PrintWriter writer = new PrintWriter(file, "UTF-8");
 		DecimalFormat df = new DecimalFormat("#.#");
+		
+		writer.println("FPS "+Constant.DEPTH_FPS);
+		writer.println("SPF "+Constant.SAMPLES_PER_FRAME);
+		
+		//TODO hierarchy
 		for(JointType type : Constant.JOINT_TYPES){
 			writer.println("j "+type.toString());
 		}
+		
 		for(int i = 0;i<sequence.size();i++){
 			Pose pose = sequence.get(i);
 			writer.println("t "+pose.getTimeStamp());

@@ -103,7 +103,7 @@ public class Camera implements KeyListener, MouseMotionListener{
 		lastY = event.getY();
 
 		if(Math.abs(diffX)<Math.abs(diffY)){
-			rotateX(diffY*Constant.CAMERA_ROTATE_SPEED);
+			rotateX(-diffY*Constant.CAMERA_ROTATE_SPEED);
 		}else{
 			rotateY(-diffX*Constant.CAMERA_ROTATE_SPEED);
 		}

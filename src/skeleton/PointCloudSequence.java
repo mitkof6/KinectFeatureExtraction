@@ -49,21 +49,20 @@ public class PointCloudSequence {
 		
 		float[] wellow = {1f, 1f, 0};
 		
+		//text
 		TextRenderer renderer = new TextRenderer(new Font("SansSerif", Font.BOLD, 12));
 		renderer.beginRendering(Constant.ANIMATOR_WIDTH, Constant.ANIMATOR_HEIGHT);
-	    // optionally set the color
 	    renderer.setColor(0f, 0f, 0f, 0.8f);
 	    renderer.draw(String.format("PC: %d", sequence.lastElement().getTimeStamp()), 10, Constant.ANIMATOR_HEIGHT-15) ;
-	    // ... more draw commands, color changes, etc.
 	    renderer.endRendering();
 		
 		for(Point3D<Float> p : sequence.lastElement().getPointCloud()){
 			gl.glBegin(GL2.GL_POINTS);
 				gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, wellow, 0);
 				gl.glVertex3d(
-					p.getX()/Constant.JOINT_POSITION_SCALING,
-					p.getY()/Constant.JOINT_POSITION_SCALING,
-					p.getZ()/Constant.JOINT_POSITION_SCALING);
+					p.getX()/Constant.POSITION_SCALING,
+					p.getY()/Constant.POSITION_SCALING,
+					p.getZ()/Constant.POSITION_SCALING);
 			gl.glEnd();
 			
 		}
@@ -74,6 +73,9 @@ public class PointCloudSequence {
 	public void export(String file) throws FileNotFoundException, UnsupportedEncodingException{
 		PrintWriter writer = new PrintWriter(file, "UTF-8");
 		DecimalFormat df = new DecimalFormat("#.#");
+		
+		writer.println("FPS "+Constant.DEPTH_FPS);
+		writer.println("SPF "+Constant.SAMPLES_PER_FRAME);
 		
 		for(int i = 0;i<sequence.size();i++){
 			PointCloud pointCloud = sequence.get(i);

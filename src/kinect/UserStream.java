@@ -56,9 +56,10 @@ public class UserStream implements  NewFrameListener{
 	public void onNewFrame(UserTracker arg0) {
 		lastFrame = tracker.readFrame();
 		
+		//get floor Y coordinate
 		if(!detectFlor&&lastFrame.getFloorConfidence()>Constant.FLOOR_CONFIDENCE){
 			Constant.FLOOR_Y = 
-				-lastFrame.getPlane().getPoint().getY().intValue()/Constant.JOINT_POSITION_SCALING;
+				-lastFrame.getPlane().getPoint().getY().intValue()/Constant.POSITION_SCALING;
 			detectFlor = !detectFlor;
 		}
 		
@@ -84,7 +85,7 @@ public class UserStream implements  NewFrameListener{
         				sequence.add(user.getSkeleton(), lastFrame.getTimestamp());
         				startSampling = Constant.DEPTH_FPS/Constant.SAMPLES_PER_FRAME;
         			}
-            		getUserMap(user.getId());
+            		setUserSegmentation(user.getId());
             	}
         	}
 
@@ -92,11 +93,11 @@ public class UserStream implements  NewFrameListener{
 	}
 	
 	/**
-	 * Get user pixels
+	 * Set userPixel with the mask of the user
 	 * 
 	 * @param id of user
 	 */
-	private void getUserMap(short id){
+	private void setUserSegmentation(short id){
 		UserMap userMap =  lastFrame.getUserMap();
 
 		ByteBuffer frameData = userMap.getPixels();
@@ -111,7 +112,6 @@ public class UserStream implements  NewFrameListener{
 			
 			filter(height, width);
 			
-			//System.out.println(depth);
 			width++;
             if(width == Constant.DEPTH_WIDTH){
             	
@@ -123,10 +123,16 @@ public class UserStream implements  NewFrameListener{
 		}
 	}
 	
+	/**
+	 * Reduce density of pixel (less points for computation of point cloud)
+	 * 
+	 * @param height Y center of kernel
+	 * @param width X center of kernel 
+	 */
 	private void filter(int height, int width){
-		if(height-Constant.POINT_CLOUD_SAMPLING>0&&
-				width-Constant.POINT_CLOUD_SAMPLING>0){
-			for(int i = Constant.POINT_CLOUD_SAMPLING;i>0;i--){
+		if(height-Constant.POINT_CLOUD_DENSITY>0&&
+				width-Constant.POINT_CLOUD_DENSITY>0){
+			for(int i = Constant.POINT_CLOUD_DENSITY;i>0;i--){
 				if(userPixel[height-i][width]!=0||userPixel[height][width-i]!=0){
 					userPixel[height][width] = 0;
 				}

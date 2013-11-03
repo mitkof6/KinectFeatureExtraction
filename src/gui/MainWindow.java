@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
 import main.Constant;
@@ -76,11 +77,11 @@ public class MainWindow extends JFrame{
 					try {
 						Main.kinect.userStream.sequence.export(Constant.SKELETON_FILE_NAME);
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, 
+								"Skeleton sequence can't be saved", "Error", JOptionPane.ERROR_MESSAGE);
 					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, 
+								"Skeleton sequence can't be saved", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				
@@ -98,11 +99,11 @@ public class MainWindow extends JFrame{
 					try {
 						Main.kinect.depthStream.sequence.export(Constant.POINT_CLOUD_FILE_NAME);
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, 
+								"Point cloud sequence can't be saved", "Error", JOptionPane.ERROR_MESSAGE);
 					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, 
+								"Point cloud sequence can't be saved", "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				
@@ -112,5 +113,6 @@ public class MainWindow extends JFrame{
 		this.add(toolBar, BorderLayout.NORTH);
 		
 		this.setSize(Constant.MAIN_WINDOW_WIDTH, Constant.MAIN_WINDOW_HEIGHT);
+		this.setResizable(false);
 	}
 }
