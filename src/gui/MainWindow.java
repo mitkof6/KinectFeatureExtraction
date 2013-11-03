@@ -12,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
 
+import com.primesense.nite.JointType;
+
 import main.Constant;
 import main.Main;
 
@@ -35,10 +37,10 @@ public class MainWindow extends JFrame{
 
 		//rgb-depth
 		Box horizontBox = Box.createHorizontalBox();
-		if(Main.kinect.rgbStream!=null){
+		if(Constant.START_COLOR_STREAM){
 			horizontBox.add(Main.kinect.rgbStream);
 		}
-		if(Main.kinect.depthStream!=null){
+		if(Constant.START_DEPTH_STREAM){
 			horizontBox.add(Main.kinect.depthStream.viwer);			
 		}
         this.add(horizontBox, BorderLayout.CENTER);
@@ -50,7 +52,7 @@ public class MainWindow extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(Main.kinect.rgbStream!=null) Main.kinect.rgbStream.setStart();
+				if(Constant.START_COLOR_STREAM) Main.kinect.rgbStream.setStart();
 				
 			}
 		});
@@ -61,7 +63,7 @@ public class MainWindow extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(Main.kinect.depthStream!=null) Main.kinect.depthStream.setStart();
+				if(Constant.START_DEPTH_STREAM) Main.kinect.depthStream.setStart();
 				
 			}
 		});
@@ -73,9 +75,15 @@ public class MainWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if(Main.kinect.userStream!=null) {
+				if(Constant.START_USER_STREAM) {
 					try {
 						Main.kinect.userStream.sequence.export(Constant.SKELETON_FILE_NAME);
+						if(Constant.MATLAB_EXPORT){
+							for(JointType type : Constant.JOINT_TYPES){
+								Main.kinect.userStream.sequence.matlabExporter(type);
+							}
+						}
+						
 					} catch (FileNotFoundException e) {
 						JOptionPane.showMessageDialog(null, 
 								"Skeleton sequence can't be saved", "Error", JOptionPane.ERROR_MESSAGE);
@@ -95,7 +103,7 @@ public class MainWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				if(Main.kinect.depthStream!=null) {
+				if(Constant.START_DEPTH_STREAM) {
 					try {
 						Main.kinect.depthStream.sequence.export(Constant.POINT_CLOUD_FILE_NAME);
 					} catch (FileNotFoundException e) {
@@ -110,6 +118,22 @@ public class MainWindow extends JFrame{
 			}
 		});
 		toolBar.add(saveMesh);
+		
+		JButton cleanData = new JButton("Clean Captured Data");
+		cleanData.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(Constant.START_DEPTH_STREAM) {
+					Main.kinect.depthStream.sequence.getSequence().clear();
+				}
+				if(Constant.START_USER_STREAM){
+					Main.kinect.userStream.sequence.getSequence().clear();
+				}
+			}
+		});
+		toolBar.add(cleanData);
 		this.add(toolBar, BorderLayout.NORTH);
 		
 		this.setSize(Constant.MAIN_WINDOW_WIDTH, Constant.MAIN_WINDOW_HEIGHT);

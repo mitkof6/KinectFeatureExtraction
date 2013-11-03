@@ -40,6 +40,10 @@ public class SkeletonSequence {
 		sequence.add(newPose);
 	}
 	
+	public Vector<Pose> getSequence(){
+		return sequence;
+	}
+	
 	/**
 	 * OpenGL draw function for the last pose
 	 * 
@@ -80,9 +84,16 @@ public class SkeletonSequence {
 		gl.glPopMatrix();
 	}
 	
+	/**
+	 * Exports the sequence of poses to file
+	 * 
+	 * @param file path
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
 	public void export(String file) throws FileNotFoundException, UnsupportedEncodingException{
 		PrintWriter writer = new PrintWriter(file, "UTF-8");
-		DecimalFormat df = new DecimalFormat("#.#");
+		DecimalFormat df = new DecimalFormat("#.##");
 		
 		writer.println("FPS "+Constant.DEPTH_FPS);
 		writer.println("SPF "+Constant.SAMPLES_PER_FRAME);
@@ -101,14 +112,39 @@ public class SkeletonSequence {
 						type.toString()+" "+
 						df.format(joint.getPosition().getX())+" "+
 						df.format(joint.getPosition().getY())+" "+
-						df.format(joint.getPosition().getY())+" "+
+						df.format(joint.getPosition().getZ())+" "+
 						df.format(joint.getPositionConfidence())+" "+
 						df.format(joint.getOrientation().getX())+" "+
 						df.format(joint.getOrientation().getY())+" "+
-						df.format(joint.getOrientation().getY())+" "+
+						df.format(joint.getOrientation().getZ())+" "+
 						df.format(joint.getOrientation().getW())+" "+
 						df.format(joint.getOrientationConfidence()));
 			}
+		}
+		
+		writer.close();
+	}
+	
+	/**
+	 * Generates JOINT_TYPE.dat with (# X Y Z) mat for matlab to import
+	 * 
+	 * @param type the type of the joint to be generated
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
+	public void matlabExporter(JointType type) throws FileNotFoundException, UnsupportedEncodingException{
+		PrintWriter writer = new PrintWriter(type.toString()+".dat", "UTF-8");
+		DecimalFormat df = new DecimalFormat("#.#");
+		
+		for(int i = 0;i<sequence.size();i++){
+			Pose pose = sequence.get(i);
+
+			SkeletonJoint joint = pose.get(type);
+			writer.println(i+" "+
+					df.format(joint.getPosition().getX())+"	"+
+					df.format(joint.getPosition().getY())+" "+
+					df.format(joint.getPosition().getZ()));
+			
 		}
 		
 		writer.close();

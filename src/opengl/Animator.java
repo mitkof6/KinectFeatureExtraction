@@ -157,8 +157,8 @@ public class Animator extends Frame implements GLEventListener {
 				
 		//draw skeleton
 		if(Constant.SKELETON_VISIBILITY){
-			if(Main.kinect.userStream!=null) Main.kinect.userStream.sequence.draw(gl);
-			if(Main.kinect.depthStream!=null) Main.kinect.depthStream.sequence.draw(gl);
+			if(Constant.START_USER_STREAM) Main.kinect.userStream.sequence.draw(gl);
+			if(Constant.START_DEPTH_STREAM) Main.kinect.depthStream.sequence.draw(gl);
 		}
 		
 		gl.glFlush();

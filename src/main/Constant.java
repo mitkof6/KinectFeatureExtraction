@@ -52,6 +52,9 @@ public class Constant {
 	public static final int ANIMATOR_HEIGHT = 480;
 	public static final int KINECT_HFOV = 57;
 	
+	//Matlab
+	public static boolean MATLAB_EXPORT;
+	
 	//Confidence
 	public static final float JOINT_CONFIDENCE = .6f;
 	

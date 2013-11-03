@@ -70,6 +70,13 @@ public class PointCloudSequence {
 		gl.glPopMatrix();
 	}
 	
+	/**
+	 * Exports the sequence of point clouds to file
+	 * 
+	 * @param file path
+	 * @throws FileNotFoundException
+	 * @throws UnsupportedEncodingException
+	 */
 	public void export(String file) throws FileNotFoundException, UnsupportedEncodingException{
 		PrintWriter writer = new PrintWriter(file, "UTF-8");
 		DecimalFormat df = new DecimalFormat("#.#");

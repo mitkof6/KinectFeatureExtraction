@@ -84,6 +84,8 @@ public class Main {
 		
 		Constant.START_ANIMATOR = Boolean.parseBoolean(prop.getProperty("START_ANIMATOR"));
 		
+		Constant.MATLAB_EXPORT = Boolean.parseBoolean(prop.getProperty("MATLAB_EXPORT"));
+		
 		Constant.POSITION_SCALING = Integer.parseInt(prop.getProperty("POSITION_SCALING"));
 		
 		Constant.GRID_SIZE = Integer.parseInt(prop.getProperty("GRID_SIZE"));
