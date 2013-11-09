@@ -10,7 +10,7 @@ import main.Constant;
  * @author Jim Stanev
  *
  */
-public class Floor {
+public class Grid extends Drawable{
 	
 	private int gridSize;
 	private int gridLineWidth;
@@ -19,7 +19,7 @@ public class Floor {
 	private float[] white = {1f , 1f, 1f};
 	private float[] black = {0f, 0f, 0f};
 	
-	public Floor(int gridSize, int gridLineWidth){
+	public Grid(int gridSize, int gridLineWidth){
 		this.gridSize = gridSize;
 		this.gridLineWidth = gridLineWidth;
 	}
@@ -50,7 +50,7 @@ public class Floor {
                 	gl.glNormal3fv(normal, 0);
                 	gl.glVertex3d(i, -Constant.FLOOR_Y, j - 1);
                 	gl.glNormal3fv(normal, 0);
-                	gl.glVertex3d(i - 1,-Constant.FLOOR_Y, j - 1);
+                	gl.glVertex3d(i - 1, -Constant.FLOOR_Y, j - 1);
                 	gl.glNormal3fv(normal, 0);
                 	gl.glVertex3d(i - 1, -Constant.FLOOR_Y, j);
                 gl.glEnd();

@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import javax.media.opengl.GL2;
 
+import opengl.Drawable;
 import main.Constant;
 
 import com.jogamp.opengl.util.awt.TextRenderer;
@@ -22,7 +23,7 @@ import com.primesense.nite.SkeletonJoint;
  * @author Jim Stanev
  *
  */
-public class SkeletonSequence {
+public class SkeletonSequence extends Drawable{
 	
 	private Vector<Pose> sequence;
 	
@@ -98,9 +99,8 @@ public class SkeletonSequence {
 		writer.println("FPS "+Constant.DEPTH_FPS);
 		writer.println("SPF "+Constant.SAMPLES_PER_FRAME);
 		
-		//TODO hierarchy
 		for(JointType type : Constant.JOINT_TYPES){
-			writer.println("j "+type.toString());
+			writer.println("jt "+type.toString());
 		}
 		
 		for(int i = 0;i<sequence.size();i++){
@@ -109,6 +109,7 @@ public class SkeletonSequence {
 			for(JointType type : Constant.JOINT_TYPES){
 				SkeletonJoint joint = pose.get(type);
 				writer.println(
+						"j "+
 						type.toString()+" "+
 						df.format(joint.getPosition().getX())+" "+
 						df.format(joint.getPosition().getY())+" "+

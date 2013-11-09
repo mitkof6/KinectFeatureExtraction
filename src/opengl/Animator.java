@@ -3,6 +3,7 @@ package opengl;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -13,7 +14,6 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
 import main.Constant;
-import main.Main;
 import math.geom3d.Vector3D;
 
 import com.jogamp.opengl.util.FPSAnimator;
@@ -39,9 +39,7 @@ public class Animator extends Frame implements GLEventListener {
 	
 	private Camera camera;
 	
-	private Floor floor;
-	
-	private Axis axis;
+	private Vector<Drawable> drawable;
 
 	/**
 	 * Constructor
@@ -61,9 +59,6 @@ public class Animator extends Frame implements GLEventListener {
 			}
 		});
 
-	
-
-
 		//profile init
 		glp = GLProfile.getDefault();
 		GLProfile.initSingleton();
@@ -75,12 +70,9 @@ public class Animator extends Frame implements GLEventListener {
 			new Vector3D(Constant.CAMERA_VIEW_X, Constant.CAMERA_VIEW_Y, Constant.CAMERA_VIEW_Z),
 			new Vector3D(Constant.CAMERA_UP_X, Constant.CAMERA_UP_Y, Constant.CAMERA_UP_Z));
 		
-		//floor
-		floor = new Floor(Constant.GRID_SIZE, Constant.GRID_LINE_WIDTH);
+		//drawable
+		drawable = new Vector<>();
 		
-		//axis
-		axis = new Axis(Constant.AXIS_LENGTH, Constant.AXIS_WIDTH);
-
 		//canvas
 		canvas = new GLCanvas(caps);
 		canvas.addGLEventListener(this);
@@ -94,9 +86,16 @@ public class Animator extends Frame implements GLEventListener {
 		//animator
 		animator = new FPSAnimator(canvas, Constant.ANIMATOR_FPS);
 		animator.add(canvas);
-		animator.start();
 	}
 
+	public void start(){
+		animator.start();
+	}
+	
+	public void addToDraw(Drawable drawable){
+		this.drawable.add(drawable);
+	}
+	
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		gl = drawable.getGL().getGL2();
@@ -120,7 +119,7 @@ public class Animator extends Frame implements GLEventListener {
 
 		//perspective.
 		float widthHeightRatio = (float) getWidth() / (float) getHeight();
-		glu.gluPerspective(Constant.KINECT_HFOV, widthHeightRatio, 1, 100);
+		glu.gluPerspective(50, widthHeightRatio, 1, 100);
 
 		//change back to model view matrix.
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
@@ -149,16 +148,9 @@ public class Animator extends Frame implements GLEventListener {
 		//set camera
 		camera.update(glu);
 		
-		//draw floor
-		floor.draw(gl);
-				
-		//draw axis
-		axis.draw(gl);
-				
-		//draw skeleton
-		if(Constant.SKELETON_VISIBILITY){
-			if(Constant.START_USER_STREAM) Main.kinect.userStream.sequence.draw(gl);
-			if(Constant.START_DEPTH_STREAM) Main.kinect.depthStream.sequence.draw(gl);
+		//draw
+		for(Drawable toDraw : this.drawable){
+			toDraw.draw(gl);
 		}
 		
 		gl.glFlush();

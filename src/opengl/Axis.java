@@ -8,7 +8,7 @@ import javax.media.opengl.GL2;
  * @author Jim Stanev
  *
  */
-public class Axis {
+public class Axis extends Drawable{
 
 	private int axisLength;
 	private int axisWidth;
@@ -21,6 +21,7 @@ public class Axis {
 		this.axisLength = axisLength;
 		this.axisWidth = axisWidth;
 	}
+	
 	
 	/**
 	 * Draws some coordinates axis

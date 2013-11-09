@@ -12,6 +12,7 @@ import javax.media.opengl.GL2;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 import main.Constant;
+import opengl.Drawable;
 
 import org.openni.Point3D;
 
@@ -20,7 +21,7 @@ import org.openni.Point3D;
  * 
  * @author Jim Stanev
  */
-public class PointCloudSequence {
+public class PointCloudSequence extends Drawable{
 
 	private Vector<PointCloud> sequence;
 	

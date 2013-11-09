@@ -7,6 +7,8 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import opengl.Animator;
+import opengl.Axis;
+import opengl.Grid;
 
 import org.opencv.core.Core;
 
@@ -51,6 +53,11 @@ public class Main {
 		//animator
 		if(Constant.START_ANIMATOR){
 			Animator animator = new Animator();
+			animator.addToDraw(new Grid(Constant.GRID_SIZE, Constant.GRID_LINE_WIDTH));
+			animator.addToDraw(new Axis(Constant.AXIS_LENGTH, Constant.AXIS_WIDTH));
+			animator.addToDraw(kinect.userStream.sequence);
+			animator.addToDraw(kinect.depthStream.sequence);
+			animator.start();
 			animator.setVisible(true);
 		}
 		
